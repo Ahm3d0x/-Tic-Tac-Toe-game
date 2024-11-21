@@ -1,0 +1,419 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <title>X O</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+</head>
+<style>* {
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: 'Times New Roman', Times, serif;
+  background-color: #151517
+}
+
+.namegame {
+  text-align: center;
+  margin-top: 15px;
+  color: #EDEAFF;
+  font-weight: bolder;
+  font-size: 70px;
+}
+
+.by {
+  text-align: center;
+  margin-top: 15px;
+  color: #00FFF2;
+  font-weight: bolder;
+  font-size: 15px;
+}
+
+table {
+  margin-top: 20px;
+  margin-left: 50%;
+  transform: translateX(-50%);
+  background-color: #A6A7BA;
+  border-collapse: collapse;
+  width: 340px;
+  height: 340px;
+  border: 8px #000000 solid;
+}
+
+td {
+  border: 2px solid #333;
+  height: 120px;
+  width: 130px;
+  box-sizing: border-box;
+  text-align: center;
+  vertical-align: middle;
+  font-size: 70px;
+  cursor: pointer;
+}
+
+.score {
+  margin-top: 10px;
+  margin-left: 50%;
+  transform: translateX(-50%);
+  width: 280px;
+  display: flex;
+  justify-content: space-between;
+  font-weight: bold;
+  font-size: 25px;
+
+}
+
+.score p {
+  display: inline-block;
+  text-align: center;
+}
+
+
+
+.score1 {
+  margin-top: 5px;
+  margin-left: 50%;
+  transform: translateX(-54%);
+  width: 260px;
+  display: flex;
+  justify-content: space-between;
+  font-weight: bold;
+  font-size: 25px;
+
+}
+
+.score1 p {
+  display: inline-block;
+  text-align: center;
+}
+
+.n,
+.ni {
+  color: #FF0000;
+}
+
+.t,
+.ti {
+  color: #FFFF00;
+}
+
+.y,
+.yo {
+  color: #33FF00;
+}
+
+.massage {
+  display: none;
+  position: fixed;
+  top: 250px;
+  margin-left: 50%;
+  transform: translateX(-50%);
+  width: 50%;
+  height: 200px;
+  background-color: #1F2422D1;
+  border: 3px solid #007534;
+  border-radius: 15px;
+}
+.info{
+  text-align: center;
+  padding:3px ;
+  font-size: 20px;
+  font-weight: bold;
+  color: #00FFC5;
+}
+hr{
+  width: 50%;
+margin-left:25%;
+height: 3px;
+background-color: #000000;
+}
+.stat{
+  text-align: center;
+  padding:10px;
+  font-size: 35px;
+  font-weight: bold;
+}
+.msg2{
+  text-align: center;
+  padding:10px;
+  font-size: 30px;
+  color: #FF0700
+}</style>
+<body>
+  <h1 class="namegame">X O</h1>
+  <h5 class="by">AI "X-O" < BY :Eng Ahmed Attia>
+  </h5>
+  <table>
+    <tr>
+      <td class="cell" id="0"></td>
+      <td class="cell" id="1"></td>
+      <td class="cell" id="2"></td>
+    </tr>
+    <tr>
+      <td class="cell" id="3"></td>
+      <td class="cell" id="4"></td>
+      <td class="cell" id="5"></td>
+    </tr>
+    <tr>
+      <td class="cell" id="6"></td>
+      <td class="cell" id="7"></td>
+      <td class="cell" id="8"></td>
+    </tr>
+  </table>
+
+
+  <div class="score">
+    <p class="ni">AI</p>
+    <p class="ti">Tie</p>
+    <p class="yo">YOU</p>
+  </div>
+  <div class="score1">
+    <p class="n"></p>
+    <p class="t"></p>
+    <p class="y"></p>
+  </div>
+  <div class="massage">
+    <h5 class="info">Eng:Ahmed Attia</h5>
+    <hr>
+    <h5 class="stat"></h5>
+    <h5 class="msg2"></h5>
+
+  </div>
+  <!-- <script src="simpleAi.js"></script> -->
+  <script>let origBoard;
+const HUMAN_PLAYER = 'x';
+const AI_PLAYER = '0';
+let n = document.querySelector('.n')
+let t = document.querySelector('.t')
+let y = document.querySelector('.y')
+let msg = document.querySelector('.massage')
+let msg2 = document.querySelector('.msg2')
+let stat = document.querySelector('.stat')
+
+let msg1 = [
+  'you will never win 🤝'
+  ];
+let nn = 0;
+let tt = 0;
+let yy = 0;
+
+function data() {
+  if (localStorage.nitro == null) {
+    localStorage.nitro = '0'
+  } else {
+    nn = +localStorage.nitro
+    n.innerHTML = nn
+  }
+  if (localStorage.tie == null) {
+    localStorage.tie = '0'
+  } else {
+    tt = +localStorage.tie
+    t.innerHTML = tt
+  }
+  if (localStorage.you == null) {
+    localStorage.you = '0'
+  } else {
+    yy = +localStorage.you
+    y.innerHTML = yy
+  }
+}
+data()
+
+function updute_data() {
+  localStorage.nitro = nn
+  localStorage.tie = tt
+  localStorage.you = yy
+}
+
+
+
+const winCombos = [
+  [0, 1, 2],
+  [3, 4, 5],
+  [6, 7, 8],
+
+  [0, 3, 6],
+  [1, 4, 7],
+  [2, 5, 8],
+
+  [0, 4, 8],
+  [2, 4, 6]
+];
+
+const cells = document.getElementsByClassName('cell');
+onStartGame();
+
+function onStartGame() {
+  // console.log('Starting Game');
+msg.style.display = 'none'
+
+  origBoard = Array.from(Array(9).keys());
+  // console.table(origBoard);
+  // console.log(cells);
+  for (let i = 0; i < cells.length; i++) {
+    cells[i].innerText = '';
+    cells[i].style.removeProperty('background-color');
+    cells[i].addEventListener('click', onTurnClick, false)
+  }
+};
+
+function onTurnClick(e) {
+  // console.log(e.target.id);
+  const { id: squareId } = e.target;
+  if (typeof origBoard[squareId] === 'number') {
+    onTurn(squareId, HUMAN_PLAYER);
+    if (!onCheckGameTie()) {
+      onTurn(botPicksSpot(), AI_PLAYER)
+    }
+  } else {}
+}
+
+function onTurn(squareId, player) {
+  origBoard[squareId] = player;
+  document.getElementById(squareId).innerText = player;
+  let isGameWon = onCheckWin(origBoard, player);
+  // console.log(isGameWon)
+  if (isGameWon) {
+    onGameOver(isGameWon);
+  }
+}
+
+function onCheckWin(board, player) {
+  let plays = board.reduce((a, e, i) => {
+    return (e === player) ? a.concat(i) : a;
+  }, []);
+  let gameWon = false;
+  for (let [index, win] of winCombos.entries()) {
+    if (win.every(elem => plays.indexOf(elem) > -1)) {
+      gameWon = {
+        index: index,
+        player: player
+      };
+      break;
+    }
+  }
+  return gameWon;
+}
+
+function onGameOver({ index, player }) {
+  for (let i of winCombos[index]) {
+    const color = (player === HUMAN_PLAYER) ? '#2196f3' : '#f44336';
+    document.getElementById(i).style.backgroundColor = color;
+  }
+  for (let i = 0; i < cells.length; i++) {
+    cells[i].removeEventListener('click', onTurnClick, false)
+  }
+
+  const result = (player === HUMAN_PLAYER) ? 'You Win' : 'You Lose';
+  onDeclareWinner(result);
+}
+
+function onDeclareWinner(who) {
+  const def = msg1[Math.floor(Math.random() * msg1.length)];
+  if (who == 'You Lose') {
+    nn += 1
+    n.innerHTML = nn
+    msg2.innerHTML = def
+
+  } else if (who == 'A Tie') {
+    tt += 1
+    t.innerHTML = tt
+    msg2.innerHTML = def
+  } else if (who == 'You Win') {
+    yy += 1
+    y.innerHTML = yy
+    msg2.innerHTML = 'congratulations Man'
+
+  }
+  stat.innerHTML = who
+  updute_data()
+  msg.style.display = 'block'
+  setTimeout(onStartGame, 3500)
+
+}
+
+/**
+ * Bot moves
+ */
+
+function onCheckGameTie() {
+  if (emptySquares().length === 0) {
+    for (let i = 0; i < cells.length; i++) {
+      cells[i].style.backgroundColor = '#8bc34a';
+      cells[i].removeEventListener('click', onTurnClick, false)
+    }
+    onDeclareWinner('A Tie');
+    return true;
+  } else {
+    return false;
+  }
+}
+
+function emptySquares() {
+  return origBoard.filter(item => typeof item === 'number');
+}
+
+function botPicksSpot() {
+  return minimax(origBoard, AI_PLAYER).index;
+}
+
+function minimax(newBoard, player) {
+  let availableSpots = emptySquares();
+
+  if (onCheckWin(newBoard, HUMAN_PLAYER)) {
+    return { score: -10 }
+  } else if (onCheckWin(newBoard, AI_PLAYER)) {
+    return { score: 10 }
+  } else if (availableSpots.length === 0) {
+    return { score: 0 }
+  }
+
+  let moves = [];
+
+  for (let i = 0; i < availableSpots.length; i++) {
+    let move = {};
+    move.index = newBoard[availableSpots[i]];
+    newBoard[availableSpots[i]] = player;
+
+    if (player === AI_PLAYER) {
+      let result = minimax(newBoard, HUMAN_PLAYER);
+      move.score = result.score;
+    } else {
+      let result = minimax(newBoard, AI_PLAYER);
+      move.score = result.score;
+    } // end of if/else block
+
+    newBoard[availableSpots[i]] = move.index;
+    moves.push(move);
+  } // end of for look
+
+  let bestMove;
+
+  if (player === AI_PLAYER) {
+    let bestScore = -10000;
+    for (let i = 0; i < moves.length; i++) {
+      if (moves[i].score > bestScore) {
+        bestScore = moves[i].score;
+        bestMove = i;
+      }
+    } // end of for loop
+  }
+  else {
+    let bestScore = 10000;
+    for (let i = 0; i < moves.length; i++) {
+      if (moves[i].score < bestScore) {
+        bestScore = moves[i].score;
+        bestMove = i;
+      }
+    }
+  }
+
+  return moves[bestMove];
+} // end of minimax func()</script>
+</body>
+
+</html>
