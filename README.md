@@ -17,7 +17,7 @@ A fun and interactive Tic-Tac-Toe game where you can challenge an AI opponent.
 - **CSS3**: For styling and appearance.
 - **JavaScript**: For game logic and AI behavior.
 ##  Screenshot
-![Tic-Tac-Toe Game](https://github.com/Ahm3d0x/-Tic-Tac-Toe-game/blob/main/path/to/your-image.png?raw=true)
+![Tic-Tac-Toe Game Screenshot](https://github.com/Ahm3d0x/-Tic-Tac-Toe-game/blob/main/images/screenshot.png?raw=true)
 
 ## Developer
 **Ahmed M. Attia**  
